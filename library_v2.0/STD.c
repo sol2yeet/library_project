@@ -126,12 +126,8 @@ void STD_INIT(void)
   memset(&std_mib, 0x0, sizeof(std_mib));
 
   // 각 기능별 인덱스(순서)
-  std_mib.b_idx = 0;
-  std_mib.h_idx = 0;
-  std_mib.r_idx = 0;
-  std_mib.rel = 1;
-  std_mib.F_A;
-  std_mib.F_B;
+  std_mib.rel = PROG_RUN;
+
 }
 
 STD_Mib *GET_STD_PTR(void)

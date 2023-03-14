@@ -8,6 +8,9 @@
 
 /*--------------------------Variation-----------------------------*/
 
+#define PROG_RUN 1
+#define PROG_EXIT 0
+
 typedef struct BOOK
 {
   char title[30];

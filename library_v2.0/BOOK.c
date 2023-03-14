@@ -7,25 +7,25 @@
 int sort_BOOK()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
-  FILE *b_fp = fopen("BOOK.txt", "rb");
+  FILE *b_fp = fopen(BOOK_FILE_NAME, "rb");
   if (b_fp == NULL)
   {
-    printf("파일열기 실패\n");
+    printf("%s 파일열기 실패\n", BOOK_FILE_NAME);
   }
   else
   {
+    struct stat sk;
+    char *file_contents;
     printf("=============================\n");
     printf("========== 도서 목록 =========\n");
     printf("=============================\n");
 
-    struct stat sk;
-    if (stat("BOOK.txt", &sk) == -1)
+    if (stat(BOOK_FILE_NAME, &sk) == -1)
     {
       perror("stat");
       exit(EXIT_FAILURE);
     }
-
-    char *file_contents = malloc(sk.st_size);
+    file_contents = malloc(sk.st_size);
 
     int i = 1;
     while (fscanf(b_fp, "%[^\n] ", file_contents) != EOF)
@@ -36,16 +36,15 @@ int sort_BOOK()
 
     printf("================================\n");
     printf("\n");
-
+    free(file_contents);
     fclose(b_fp);
   }
 }
 
 int search_BOOK()
 {
-  int val = -3;
   STD_Mib *pStd_ptr = GET_STD_PTR();
-
+  int val = -3;
   char title[30];
   printf("=============================\n");
   printf("======= 도서검색 페이지 =======\n");
@@ -56,14 +55,14 @@ int search_BOOK()
 
   for (int i = 0; i < pStd_ptr->b_idx; i++)
   {
-    if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0)
+    if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0) // strcmp(문자열1, 문자열2); 문자열 비교 함수
     {
       val = i;
-      break; // strcmp(문자열1, 문자열2); 문자열 비교 함수
+      break;
     }
   }
   printf("\n");
-  return val; // multi return 자제..
+  return val; // 음수로 하여 겹치는 것 방지
 }
 
 void add_BOOK()
@@ -71,7 +70,7 @@ void add_BOOK()
   STD_Mib *pStd_ptr = GET_STD_PTR();
 
   FILE *b_fp;
-  b_fp = fopen("BOOK.txt", "a");
+  b_fp = fopen(BOOK_FILE_NAME, "a");
 
   if (b_fp == NULL)
   {
@@ -82,6 +81,10 @@ void add_BOOK()
     printf("=============================\n");
     printf("======= 도서추가 페이지 =======\n");
     printf("=============================\n");
+  }
+
+  if (b_fp != NULL)
+  {
     // 구조체 배열 정보를 입력받음
     printf("도서 번호 : ");
     scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num);
@@ -97,18 +100,23 @@ void add_BOOK()
     scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta);
     pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta = 1; // 도서있음(1) / 도서 없음(0)
 
-    pStd_ptr->b_idx++; // 총 책 권수 증가 +1
-    fprintf(b_fp, "%d, %s, %s, %s, %s, %d",
-            pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num, pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ, pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta // 도서있음(1) / 도서 없음(0)
+    fprintf(b_fp, "%d, %s, %s, %s, %s, %d\r\n",
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num,
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].title,
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth,
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre,
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ,
+            pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta // 도서있음(1) / 도서 없음(0)
 
     );
+
+    pStd_ptr->b_idx++; // 총 책 권수 증가 +1
     printf("\n");
     printf("도서가 등록되었습니다.\n");
     printf("\n");
 
     fclose(b_fp);
   }
-
   // return 1;
 }
 
@@ -119,7 +127,7 @@ void input_BOOK()
   char line[150];
   char *ptr;
   int word_cnt;
-  b_fp = fopen("BOOK.txt", "r");
+  b_fp = fopen(BOOK_FILE_NAME, "r");
   if (b_fp == NULL)
   {
     printf("파일열기 실패\n");
@@ -127,7 +135,6 @@ void input_BOOK()
   else
   {
     printf(" ");
-
     // BOOK 파일 입력
     while (fscanf(b_fp, "%s", line) > 0)
     {
@@ -171,7 +178,7 @@ void delete_BOOK()
 { // 기존 삭제 기능 활용
   STD_Mib *pStd_ptr = GET_STD_PTR();
   FILE *b_fp;
-  b_fp = fopen("BOOK.txt", "w");
+  b_fp = fopen(BOOK_FILE_NAME, "w");
   if (b_fp == NULL)
   {
     printf("파일열기 실패\n");
