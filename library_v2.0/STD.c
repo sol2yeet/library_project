@@ -4,6 +4,8 @@
 #include "RENT.h"
 STD_Mib std_mib;
 
+
+
 int BOOK_SW(int F_B)
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();

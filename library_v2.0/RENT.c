@@ -8,7 +8,10 @@
 void rent_BOOK()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
+
   FILE *r_fp = fopen(RENT_FILE_NAME, "a");
+  //FILE *b_fp = fopen(BOOK_FILE_NAME, "a");
+
   if (r_fp == NULL)
   {
     printf("%s 파일열기 실패\n", RENT_FILE_NAME);
@@ -17,6 +20,7 @@ void rent_BOOK()
   {
     int book_num1, mem_phon; // 핸드폰 번호로 검색
 
+    printf("도서 대출 가능 권수 : %d\n",pStd_ptr->b_idx);
     for (int i = 0; i < pStd_ptr->b_idx; i++)
     {
       printf("도서번호: %d, 제목: %s, 저자: %s, 장르: %s \r\n",
@@ -29,6 +33,7 @@ void rent_BOOK()
     scanf("%d", &book_num1); // 1. 도서번호 저장
     printf("\n");
 
+    printf("등록 회원 수 : %d\n",pStd_ptr->h_idx);
     for (int j = 0; j < pStd_ptr->h_idx; j++)
     {
       printf("%s, %s, %s\r\n",
@@ -45,8 +50,10 @@ void rent_BOOK()
     pStd_ptr->RE[pStd_ptr->r_idx].book_num1 = pStd_ptr->BOOK_in[book_num1].book_num; // 번호등록
 
     pStd_ptr->RE[pStd_ptr->r_idx].mem_phon = mem_phon;            // 회원번호
-    pStd_ptr->RE[pStd_ptr->r_idx].rent_date = timer = time(NULL); // 대여일자
-    pStd_ptr->RE[pStd_ptr->r_idx].due_date = timer + 259200;      // 대여일 3일
+   // timer = (time_t)time(NULL); // 대여일자
+    
+   // pStd_ptr->RE[pStd_ptr->r_idx].rent_date = timer;
+   // pStd_ptr->RE[pStd_ptr->r_idx].due_date = (timer + 259200);      // 대여일 3일
 
     pStd_ptr->RE[pStd_ptr->r_idx].b_sta = 0; //  0: 대여중
     pStd_ptr->BOOK_in[book_num1].b_sta = 0;  //  0: 대여중
@@ -54,7 +61,7 @@ void rent_BOOK()
     t = localtime(&timer);
     printf("회원번호 %d 님, 대여 완료되었습니다. \n 처리일시: %d 년 %d월 %d일\n", pStd_ptr->RE[pStd_ptr->r_idx].mem_phon, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
 
-    fprintf(r_fp, "\n%d, %d, %d, %d", pStd_ptr->RE[pStd_ptr->r_idx].rent_id, pStd_ptr->RE[pStd_ptr->r_idx].book_num1, pStd_ptr->RE[pStd_ptr->r_idx].mem_phon, pStd_ptr->RE[pStd_ptr->r_idx].b_sta);
+    fprintf(r_fp, "%d, %d, %d, %d\n", pStd_ptr->RE[pStd_ptr->r_idx].rent_id, pStd_ptr->RE[pStd_ptr->r_idx].book_num1, pStd_ptr->RE[pStd_ptr->r_idx].mem_phon, pStd_ptr->RE[pStd_ptr->r_idx].b_sta);
     pStd_ptr->r_idx++;
 
     fclose(r_fp);
@@ -96,7 +103,7 @@ void return_BOOK()
     pStd_ptr->RRE[re_num1].b_sta = 1;
     pStd_ptr->RRE[pStd_ptr->rr_idx].b_sta = 1;
 
-    pStd_ptr->RRE[pStd_ptr->rr_idx].retu_date = tr = time(NULL); // 반납일자
+//    pStd_ptr->RRE[pStd_ptr->rr_idx].retu_date = tr = time(NULL); // 반납일자
 
     // 연체된 경우
     if (pStd_ptr->RRE[pStd_ptr->rr_idx].retu_date > pStd_ptr->RE[re_num1].due_date)

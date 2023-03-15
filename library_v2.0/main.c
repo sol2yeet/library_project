@@ -3,7 +3,7 @@
 #include "MEM.h"  // 회원
 #include "RENT.h" // 대여 반납
 #define BUFFER_SIZE 1024
-
+ 
 int main()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();

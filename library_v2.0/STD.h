@@ -42,8 +42,22 @@ typedef struct RENT
   int b_sta;     // 0: 대여, 1:반납
 } RENT;
 
+
+typedef struct _BOOK_FILE_INFO_
+{
+  char use;
+  BOOK book_info; 
+
+}BOOK_FILE_INFO;
+
+
 typedef struct STD_MIB
 {
+
+  BOOK_FILE_INFO book_info[100];
+
+
+  
   // 각 기능별 인덱스(순서)
   int b_idx;  // 책 번호
   int h_idx;  // 회원번호
@@ -61,7 +75,7 @@ typedef struct STD_MIB
 
 } STD_Mib;
 
-__timer_t *timer;
+time_t *timer;
 struct tm *tr;
 struct tm *t;
 
