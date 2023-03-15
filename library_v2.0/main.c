@@ -9,10 +9,10 @@ int main()
   STD_Mib *pStd_ptr = GET_STD_PTR();
   STD_INIT();
 
-  input_BOOK(); // 책 정보 입력
-  input_MEM();  // 회원정보 입력
-  // input_RENT();   // 대여정보 입력
-  // input_RETURN(); // 반납정보 입력
+  input_BOOK();   // 책 정보 입력
+  input_MEM();    // 회원정보 입력
+  input_RENT();   // 대여정보 입력
+  input_RETURN(); // 반납정보 입력
 
   while (pStd_ptr->rel != 0)
   {

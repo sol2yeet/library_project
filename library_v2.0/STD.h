@@ -30,6 +30,17 @@ typedef struct MEM
 
 typedef struct RENT
 {
+  int id;              // 대여번호
+  int book_num1;       // 도서 번호
+  char book_title[30]; // 도서제목
+  int hum_phon;        // 회원 핸드폰 번호
+
+  int rent_date; // 대여일자
+  int due_date;  // 반납예정일자
+  int retu_date; // 반납일자
+  int b_sta;     // 0: 대여, 1:반납
+  int bor;       // 대여권수
+  int N_bor;     // 대여 가능 권수
 } RENT;
 
 typedef struct STD_MIB
@@ -38,6 +49,7 @@ typedef struct STD_MIB
   int b_idx;
   int h_idx;
   int r_idx;
+  int rr_idx;
   // 기능 반복용 변수
   int rel;
   // 기능 선택용 변수
@@ -45,8 +57,14 @@ typedef struct STD_MIB
   int F_B;
   BOOK BOOK_in[100];
   MEM MEM_in[100];
+  RENT RE[100];  // 원하는 수 넣기
+  RENT RRE[100]; // 원하는 수 넣기
 
 } STD_Mib;
+
+// timer_t timer; // 현제 시간 이용을 위한 timer_t
+struct tm *tr;
+struct tm *t;
 
 /*---------------------------Function-----------------------------*/
 
@@ -58,6 +76,7 @@ printf('4. 나가기 \n');
 */
 int BOOK_SW(int F_B);
 int MEM_SW(int F_B);
+int RENT_SW(int F_B);
 void STD_INIT(void);
 STD_Mib *GET_STD_PTR(void);
 

@@ -62,7 +62,7 @@ int search_BOOK()
     }
   }
   printf("\n");
-  return val; // 음수로 하여 겹치는 것 방지
+  return val;
 }
 
 void add_BOOK()

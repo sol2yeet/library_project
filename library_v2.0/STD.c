@@ -127,10 +127,51 @@ void STD_INIT(void)
 
   // 각 기능별 인덱스(순서)
   std_mib.rel = PROG_RUN;
-
 }
 
 STD_Mib *GET_STD_PTR(void)
 {
   return &std_mib;
 }
+
+/*
+printf('1. 도서 대출\n');
+printf('2. 도서 반납\n');
+printf('3. 연체 현황\n');
+printf('4. 나가기\n');
+*/
+
+int RENT_SW(int F_B)
+{
+  int j;
+  switch (F_B)
+  {
+  case 1:
+    printf('도서 대출\n');
+    rent_BOOK();
+    break;
+
+  case 2:
+    printf('도서 반납\n');
+    return_BOOK();
+    break;
+
+  case 3:
+    printf('대출 및 반납 현황\n');
+    rent_tot();
+    printf('\n');
+    printf('목록을 그만 보고 싶으면 1을 눌러 주세요 : ');
+    scanf('%d', &j);
+    if (j == 1)
+    {
+      break;
+    }
+
+  case 4:
+    printf('뒤로가기\n');
+    break;
+  default:
+    printf('잘못된 숫자를 입력하셨습니다. \n\n');
+  }
+  return 0;
+};
