@@ -1,6 +1,7 @@
 #include "STD.h"
 #include "BOOK.h"
 #include "MEM.h"
+#include "RENT.h"
 STD_Mib std_mib;
 
 int BOOK_SW(int F_B)
@@ -147,31 +148,32 @@ int RENT_SW(int F_B)
   switch (F_B)
   {
   case 1:
-    printf('도서 대출\n');
+    printf("도서 대출\n");
     rent_BOOK();
     break;
 
   case 2:
-    printf('도서 반납\n');
+    printf("도서 반납\n");
     return_BOOK();
     break;
 
   case 3:
-    printf('대출 및 반납 현황\n');
-    rent_tot();
-    printf('\n');
-    printf('목록을 그만 보고 싶으면 1을 눌러 주세요 : ');
-    scanf('%d', &j);
+    printf("대출 및 반납 현황\n");
+    rent_list();
+    printf("\n");
+    printf("목록을 그만 보고 싶으면 1을 눌러 주세요 : ");
+    scanf("%d", &j);
+    printf("\n");
     if (j == 1)
     {
       break;
     }
 
   case 4:
-    printf('뒤로가기\n');
+    printf("뒤로가기\n");
     break;
   default:
-    printf('잘못된 숫자를 입력하셨습니다. \n\n');
+    printf("잘못된 숫자를 입력하셨습니다. \n\n");
   }
   return 0;
 };
