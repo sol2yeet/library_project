@@ -21,6 +21,11 @@ void return_BOOK()
 
     for (int j = 0; j < pStd_ptr->r_idx; j++)
     {
+      /* Check if re_num1 is valid or not */
+      // if (re_num1 < 0 || re_num1 >= pStd_ptr->r_idx) {
+      //   printf("Invalid rental number.\n");
+      //   return;
+      //   }
       printf("대여번호 : %d/ 책번호 : %d/ 핸드폰번호 : %d/ 책상태 : [%d]\n",
              pStd_ptr->RE[pStd_ptr->r_idx].id,
              pStd_ptr->RE[pStd_ptr->r_idx].book_num1,
