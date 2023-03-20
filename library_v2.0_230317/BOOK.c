@@ -55,8 +55,7 @@ int search_BOOK()
 
   for (int i = 0; i < pStd_ptr->b_idx; i++)
   {
-    printf("%s/%s\n", title, pStd_ptr->BOOK_in[i].title);
-
+    printf("#%d %s/%s\n", i, title, pStd_ptr->BOOK_in[i].title);
     if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0) // strcmp(문자열1, 문자열2); 문자열 비교 함수
     {
       val = i;
@@ -128,7 +127,8 @@ void input_BOOK()
   FILE *b_fp;
   char line[150];
   char *ptr;
-  int word_cnt;
+  int word_cnt = 0;
+  int book_index = 0;
   b_fp = fopen(BOOK_FILE_NAME, "r");
   if (b_fp == NULL)
   {
@@ -140,12 +140,18 @@ void input_BOOK()
     // BOOK 파일 입력
     while (fscanf(b_fp, "%s", line) > 0)
     {
-      word_cnt = 0;
+      if (word_cnt > 5)
+      {
+        word_cnt = 0;
+        pStd_ptr->b_idx++;
+      }
+
       // printf('%s\n', line);
       ptr = strtok(line, ",");
-      while (ptr != NULL)
+      //   while (ptr != NULL)
       {
         word_cnt++;
+
         switch (word_cnt) // 하나씩 증가하면서 한개씩 읽어서 표현
         {
         case 1:                                                    // int
@@ -168,12 +174,16 @@ void input_BOOK()
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ, ptr);
           break;
         }
+        // printf("###%s/%d\n",ptr,word_cnt);
         ptr = strtok(NULL, ",");
       }
-      pStd_ptr->b_idx++;
     }
     fclose(b_fp); // 파일 포인터 닫기
   }
+  //  printf("$$%s\n",pStd_ptr->BOOK_in[0].title);
+  //  printf("$$%s\n",pStd_ptr->BOOK_in[1].title);
+  //  printf("$$%s\n",pStd_ptr->BOOK_in[2].title);
+
 } // 책 정보 입력
 
 void delete_BOOK()

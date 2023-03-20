@@ -20,7 +20,7 @@ int BOOK_SW(int F_B)
     }
     else
     {
-      printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ);
+      printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s\n", pStd_ptr->BOOK_in[book].title, pStd_ptr->BOOK_in[book].genre, pStd_ptr->BOOK_in[book].auth, pStd_ptr->BOOK_in[book].publ);
     }
     break;
 
@@ -82,8 +82,7 @@ int MEM_SW(int F_B)
     }
     else
     {
-      printf("회원정보\n 이름: %s 핸드폰번호: %s 성별: %s", pStd_ptr->MEM_in[MEM].name, pStd_ptr->MEM_in[MEM].phone, pStd_ptr->MEM_in[MEM].gene);
-      printf("\n");
+      printf("회원정보\n 이름: %s 핸드폰번호: %s 성별: %s\n", pStd_ptr->MEM_in[MEM].name, pStd_ptr->MEM_in[MEM].phone, pStd_ptr->MEM_in[MEM].gene);
     }
     break;
 
@@ -159,7 +158,7 @@ int RENT_SW(int F_B)
     break;
 
   case 3:
-    printf("대여 현황\n");
+    printf("대출 및 반납 현황\n");
     rent_list();
     printf("\n");
     printf("목록을 그만 보고 싶으면 1을 눌러 주세요 : ");
