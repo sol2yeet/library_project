@@ -8,9 +8,11 @@ int sort_MEM()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
   FILE *h_fp = fopen(MEM_FILE_NAME, "rb");
+
   if (h_fp == NULL)
   {
-    printf("파일열기 실패\n");
+    perror("Could not open data file");
+    exit(EXIT_FAILURE);
   }
   else
   {
@@ -36,11 +38,8 @@ int sort_MEM()
       i++;
     }
     printf("\n");
-    printf("================================\n");
-    printf("\n");
+    printf("================================\n\n");
 
-    //   printf(("[%ld] 회원정보\n 이름: %s 핸드폰번호: %s 성별: %s\n", i, pStd_ptr->MEM_in[pStd_ptr->h_idx].name, pStd_ptr->MEM_in[pStd_ptr->h_idx].phone, pStd_ptr->MEM_in[pStd_ptr->h_idx].gene));
-    // }
     free(file_contents);
     fclose(h_fp);
   }
@@ -57,7 +56,7 @@ int search_MEM()
 
   for (i = 0; i < pStd_ptr->h_idx; i++)
   {
-    if (strcmp(phone, pStd_ptr->MEM_in[i].phone) == 0) // strcmp(문자열1, 문자열2 비교)
+    if (strcmp(phone, pStd_ptr->MEM_in[i].phone) == 0)
       return i;
   }
   printf("\n");
@@ -72,7 +71,8 @@ void add_MEM()
   h_fp = fopen(MEM_FILE_NAME, "a");
   if (h_fp == NULL)
   {
-    printf("파일열기 실패\n");
+    perror("Could not open data file");
+    exit(EXIT_FAILURE);
   }
   else
   {
@@ -109,7 +109,8 @@ void input_MEM()
 
   if (h_fp == NULL)
   {
-    printf("%s 파일열기 실패\n", MEM_FILE_NAME);
+    perror("Could not open data file");
+    exit(EXIT_FAILURE);
   }
   else
   {
@@ -145,7 +146,7 @@ void input_MEM()
         // strtok 문자열 자르기
         // atoi 문자 >>> 숫자 변환
       }
-        }
+    }
     fclose(h_fp);
     // 회원정보 입력
   }
