@@ -1,6 +1,7 @@
 #include "STD.h"
 #include "BOOK.h"
 #include "MEM.h"
+#include "RENT.h"
 STD_Mib std_mib;
 
 int BOOK_SW(int F_B)
@@ -19,7 +20,7 @@ int BOOK_SW(int F_B)
     }
     else
     {
-      printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ);
+      printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s\n", pStd_ptr->BOOK_in[book].title, pStd_ptr->BOOK_in[book].genre, pStd_ptr->BOOK_in[book].auth, pStd_ptr->BOOK_in[book].publ);
     }
     break;
 
@@ -127,10 +128,52 @@ void STD_INIT(void)
 
   // 각 기능별 인덱스(순서)
   std_mib.rel = PROG_RUN;
-
 }
 
 STD_Mib *GET_STD_PTR(void)
 {
   return &std_mib;
 }
+
+/*
+printf('1. 도서 대출\n');
+printf('2. 도서 반납\n');
+printf('3. 연체 현황\n');
+printf('4. 나가기\n');
+*/
+
+int RENT_SW(int F_B)
+{
+  int j;
+  switch (F_B)
+  {
+  case 1:
+    printf("도서 대출\n");
+    rent_BOOK();
+    break;
+
+  case 2:
+    printf("도서 반납\n");
+    return_BOOK();
+    break;
+
+  case 3:
+    printf("대출 및 반납 현황\n");
+    rent_list();
+    printf("\n");
+    printf("목록을 그만 보고 싶으면 1을 눌러 주세요 : ");
+    scanf("%d", &j);
+    printf("\n");
+    if (j == 1)
+    {
+      break;
+    }
+
+  case 4:
+    printf("뒤로가기\n");
+    break;
+  default:
+    printf("잘못된 숫자를 입력하셨습니다. \n\n");
+  }
+  return 0;
+};

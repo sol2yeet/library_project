@@ -120,7 +120,11 @@ void input_MEM()
       ptr = strtok(line, ",");
       while (ptr != NULL)
       {
-        word_cnt++;
+        if (word_cnt > 3)
+        {
+          word_cnt = 0;
+          pStd_ptr->h_idx++;
+        }
 
         switch (word_cnt)
         {
@@ -141,8 +145,7 @@ void input_MEM()
         // strtok 문자열 자르기
         // atoi 문자 >>> 숫자 변환
       }
-      pStd_ptr->h_idx++;
-    }
+        }
     fclose(h_fp);
     // 회원정보 입력
   }

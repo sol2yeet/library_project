@@ -55,17 +55,26 @@ int search_BOOK()
 
   for (int i = 0; i < pStd_ptr->b_idx; i++)
   {
-    if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0) // strcmp(문자열1, 문자열2); 문자열 비교 함수
+    printf("#%d %s/%s\n", i, title, pStd_ptr->BOOK_in[i].title);
+    if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0)
     {
       val = i;
       break;
     }
   }
   printf("\n");
-  return val; // 음수로 하여 겹치는 것 방지
+  return val;
 }
 
 void add_BOOK()
+/*FIXME
+
+1.도서번호는 순차적으로 등록 및 삭제되어야 한다.
+  -> 도서 등록시 입력받는 번호는 순번이 아닌 삭제및대여기능을 수행하기위한 고유식별번호이다(사용법 고민)
+
+2.출력시 등록된 도서의 정보와 전체 목록이 출력된다.
+  -> sort_BOOK()실행
+  */
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
 
@@ -85,7 +94,6 @@ void add_BOOK()
 
   if (b_fp != NULL)
   {
-    // 구조체 배열 정보를 입력받음
     printf("도서 번호 : ");
     scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num);
     printf("제목 : ");
@@ -107,17 +115,15 @@ void add_BOOK()
             pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre,
             pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ,
             pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta // 도서있음(1) / 도서 없음(0)
-
     );
 
-    pStd_ptr->b_idx++; // 총 책 권수 증가 +1
+    pStd_ptr->b_idx++;
     printf("\n");
     printf("도서가 등록되었습니다.\n");
     printf("\n");
 
     fclose(b_fp);
   }
-  // return 1;
 }
 
 void input_BOOK()
@@ -126,7 +132,8 @@ void input_BOOK()
   FILE *b_fp;
   char line[150];
   char *ptr;
-  int word_cnt;
+  int word_cnt = 0;
+  int book_index = 0;
   b_fp = fopen(BOOK_FILE_NAME, "r");
   if (b_fp == NULL)
   {
@@ -135,47 +142,51 @@ void input_BOOK()
   else
   {
     printf(" ");
-    // BOOK 파일 입력
     while (fscanf(b_fp, "%s", line) > 0)
     {
-      word_cnt = 0;
+      if (word_cnt > 5)
+      {
+        word_cnt = 0;
+        pStd_ptr->b_idx++;
+      }
+
       // printf('%s\n', line);
       ptr = strtok(line, ",");
-      while (ptr != NULL)
+      //   while (ptr != NULL)
       {
         word_cnt++;
-        switch (word_cnt) // 하나씩 증가하면서 한개씩 읽어서 표현
+
+        switch (word_cnt)
         {
-        case 1:                                                    // int
-          pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num = atoi(ptr); // 숫자로 바꿔주기
+        case 1:
+          pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num = atoi(ptr);
           break;
 
-        case 2: // char title
+        case 2:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, ptr);
           break;
 
-        case 3: // char auth
+        case 3:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, ptr);
           break;
 
-        case 4: // char genre
+        case 4:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, ptr);
           break;
 
-        case 5: // char publisher
+        case 5:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ, ptr);
           break;
         }
         ptr = strtok(NULL, ",");
       }
-      pStd_ptr->b_idx++;
     }
-    fclose(b_fp); // 파일 포인터 닫기
+    fclose(b_fp);
   }
-} // 책 정보 입력
+}
 
 void delete_BOOK()
-{ // 기존 삭제 기능 활용
+{
   STD_Mib *pStd_ptr = GET_STD_PTR();
   FILE *b_fp;
   b_fp = fopen(BOOK_FILE_NAME, "w");
@@ -191,10 +202,6 @@ void delete_BOOK()
     printf("\n");
     printf("\n");
     printf("\n");
-
-    // TODO
-    /* 도서검색 -> 삭제하시겠습니까? -> 업데이트된 목록을 보여줌*/
-
     fclose(b_fp);
   }
 }

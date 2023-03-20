@@ -3,16 +3,16 @@
 #include "MEM.h"  // 회원
 #include "RENT.h" // 대여 반납
 #define BUFFER_SIZE 1024
-
+ 
 int main()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
   STD_INIT();
 
-  input_BOOK(); // 책 정보 입력
-  input_MEM();  // 회원정보 입력
-  // input_RENT();   // 대여정보 입력
-  // input_RETURN(); // 반납정보 입력
+  input_BOOK();   // 책 정보 입력
+  input_MEM();    // 회원정보 입력
+  input_RENT();   // 대여정보 입력
+  input_RETURN(); // 반납정보 입력
 
   while (pStd_ptr->rel != 0)
   {
@@ -65,13 +65,12 @@ int main()
       printf("=============================\n");
       printf("1. 도서 대출\n");
       printf("2. 도서 반납 \n");
-      printf("3. 도서 연체 현황 \n");
-      printf("4. 회원 목록 보기 \n");
-      printf("5. 이전 페이지로 돌아가기 \n");
+      printf("3. 대출 및 반납 \n");
+      printf("4. 이전 페이지로 돌아가기 \n");
       printf("원하는 기능을 선택 해주세요 : \n");
       scanf("%d", &(pStd_ptr->F_B));
       printf("\n");
-      MEM_SW(pStd_ptr->F_B);
+      RENT_SW(pStd_ptr->F_B);
       break;
 
     case 4: /* 종료 */
