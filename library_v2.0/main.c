@@ -8,9 +8,6 @@ int main()
   STD_Mib *pStd_ptr = GET_STD_PTR();
   STD_INIT();
 
-  // FILE *banner = fopen("banner.txt", "r");
-  // fclose(banner);
-
   input_BOOK(); // 책 정보 입력
   input_MEM();  // 회원정보 입력
   // input_RENT();   // 대여정보 입력
@@ -57,7 +54,7 @@ int main()
       printf("|               4. MAIN --->             |\n");
       printf("|                                        |\n");
       printf("|----------------------------------------|\n");
-      printf("입력 : ");
+      printf("입력 (5번 전체목록): ");
       // printf("4. 회원 목록 보기 \n");
       scanf("%d", &(pStd_ptr->F_B));
       MEM_SW(pStd_ptr->F_B);
@@ -78,7 +75,6 @@ int main()
       break;
 
     case 4: /* 종료 */
-      printf("\n");
       printf(" 곧 오픈합니다. 또 오세용 (찡긋) \n");
       pStd_ptr->rel = 0;
       break;
