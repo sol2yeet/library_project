@@ -1,4 +1,5 @@
 #include "BOOK.h"
+#include "RENT.h"
 #include "STD.h"
 #include <sys/stat.h>
 #define ERROR_NOT_FOUND -1
@@ -43,12 +44,16 @@ int search_BOOK()
         {
           printf("   **** 검색된 도서 정보 ****\n\t 제목: %s \n\t 장르: %s \n\t 작가: %s \n\t 출판: %s\n", pStd_ptr->BOOK_in[i].title, pStd_ptr->BOOK_in[i].genre, pStd_ptr->BOOK_in[i].auth, pStd_ptr->BOOK_in[i].publ);
           printf("\n");
-          printf("  해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로)");
+          printf("  해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로) 3. 삭제(관리자용)");
           // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
           scanf("%d", &answer);
           if (answer == 1)
           {
             int RENT_SW(answer);
+          }
+          else if (answer == 3)
+          {
+            delete_BOOK();
           }
           else
             break;
@@ -276,12 +281,11 @@ void delete_BOOK()
   }
   else
   {
-    printf("=============================\n");
-    printf("======= 도서삭제 페이지 =======\n");
-    printf("=============================\n");
+    printf(">>> MAIN >> BOOK >> 도서삭제 ----------------------------------------\n\n");
     printf("\n");
     printf("\n");
     printf("\n");
+
     fclose(b_fp);
   }
 }
