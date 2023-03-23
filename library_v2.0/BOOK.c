@@ -285,7 +285,6 @@ void delete_BOOK()
     printf("\n");
     printf("\n");
     printf("\n");
-
     fclose(b_fp);
   }
 }
