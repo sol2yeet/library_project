@@ -81,11 +81,11 @@ void add_MEM()
     printf("=============================\n");
 
     // 구조체 배열에 고객 정보를 입력받음
-    printf("성함 : ");
+    printf("성함\t: ");
     scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].name);
     printf("전화번호 뒷자리 : ");
     scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].phone);
-    printf("성별 : ");
+    printf("성별\t: ");
     scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].gene);
     printf("\n");
 

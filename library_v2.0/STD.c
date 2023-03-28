@@ -83,7 +83,7 @@ int MEM_SW(int F_B)
     break;
 
   case 2: /* 회원 추가 */
-    printf(" \n");
+    printf("\n");
     add_MEM();
     input_MEM();
     break;

@@ -42,9 +42,9 @@ int search_BOOK()
         // printf("#%d %s/%s\n", i, title, pStd_ptr->BOOK_in[i].title); //test
         if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0)
         {
-          printf("   **** 검색된 도서 정보 ****\n\t 제목: %s \n\t 장르: %s \n\t 작가: %s \n\t 출판: %s\n", pStd_ptr->BOOK_in[i].title, pStd_ptr->BOOK_in[i].genre, pStd_ptr->BOOK_in[i].auth, pStd_ptr->BOOK_in[i].publ);
+          printf("\t**** 검색된 도서 정보 ****\n\t 제목: %s \n\t 장르: %s \n\t 작가: %s \n\t 출판: %s\n", pStd_ptr->BOOK_in[i].title, pStd_ptr->BOOK_in[i].genre, pStd_ptr->BOOK_in[i].auth, pStd_ptr->BOOK_in[i].publ);
           printf("\n");
-          printf("  해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로) 3. 삭제(관리자용)");
+          printf("\t해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로) 3. 삭제(관리자용)");
           // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
           scanf("%d", &answer);
           if (answer == 1)
@@ -72,7 +72,7 @@ int search_BOOK()
           // FIXME: 여러개 결과가 출력되어야 함.
           printf("-------> 검색된 도서 정보 \n\t 제목: %s \n\t 장르: %s \n\t 작가: %s \n\t 출판사: %s\n", pStd_ptr->BOOK_in[i].title, pStd_ptr->BOOK_in[i].genre, pStd_ptr->BOOK_in[i].auth, pStd_ptr->BOOK_in[i].publ);
           printf("\n");
-          printf("  해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로)");
+          printf("해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로)");
           // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
           scanf("%d", &answer);
           if (answer == 1)
@@ -168,18 +168,18 @@ void add_BOOK()
     printf(">>> MAIN >> BOOK >> 도서추가 ----------------------------------------\n\n");
     if (b_fp != NULL)
     {
-      printf("   식별번호 : ");
+      printf("식별번호\t: ");
       scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num);
-      printf("   제목 : ");
+      printf("제목\t: ");
       scanf("%s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].title);
-      printf("   작가 : ");
+      printf("작가\t: ");
       scanf("%s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth);
-      printf("   장르 : ");
+      printf("장르\t: ");
       scanf("%s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre);
-      printf("   출판사 : ");
+      printf("출판사\t: ");
       scanf("%s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ);
       printf("\n");
-      printf(" Q. 등록하시하시겠습니까?\n  1.넵 \t2.아니오  ");
+      printf("등록하시하시겠습니까?\n  1.넵 \t2.아니오  ");
       // scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta);
       scanf("%d", &answer);
       switch (answer)
