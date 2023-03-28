@@ -2,10 +2,41 @@
 #include "RENT.h"
 #include "STD.h"
 
+void Book_list(char *file, char *pfile_data)
+{
+  struct stat sk;
+  int i;
+  printf("\n");
+  printf("**************************[ B o o k   l i s t ]******************************\n\n");
+  if (stat(BOOK_FILE_NAME, &sk) == ERROR_NOT_FOUND)
+  {
+    perror("stat");
+    exit(EXIT_FAILURE);
+  }
+  pfile_data = malloc(sk.st_size);
+  i = 1;
+  while (fscanf(file, "%[^\n] ", pfile_data) != EOF)
+  {
+    printf("\t [%d] %s\n", i, pfile_data);
+    i++;
+  }
+  free(pfile_data);
+  printf("\n");
+  printf("*******************************************************************************\n");
+  printf("\n");
+}
+
 int search_BOOK()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
   FILE *b_fp = fopen(BOOK_FILE_NAME, "rb");
+  int list_answer;
+  char title[30];
+  char category[30];
+  char *file_contents;
+  int answer;
+  int i, j;
+
   if (b_fp == NULL)
   {
     perror("Could not open data file");
@@ -13,13 +44,6 @@ int search_BOOK()
   }
   else
   {
-    int list_answer;
-    char title[30];
-    char category[30];
-    int i, j;
-    struct stat sk;
-    char *file_contents;
-    int answer;
 
     printf(">>> MAIN >> BOOK >> 도서검색 --------------------------------\n\n");
     printf("\t1. 제목으로 검색\n");
@@ -42,21 +66,17 @@ int search_BOOK()
         {
           printf("\t**** 검색된 도서 정보 ****\n\t 제목: %s \n\t 장르: %s \n\t 작가: %s \n\t 출판: %s\n", pStd_ptr->BOOK_in[i].title, pStd_ptr->BOOK_in[i].genre, pStd_ptr->BOOK_in[i].auth, pStd_ptr->BOOK_in[i].publ);
           printf("\n");
-          printf("\t해당도서를 대출하시겠습니까?\n\t 1.넵\t 2.아니옵(초기화면으로) 3. 삭제(관리자용)");
-
-          // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
-          scanf("%d", &answer);
-          if (answer == 1)
-          {
-            int RENT_SW(answer);
-          }
-          else if (answer == 3)
-          {
-            delete_BOOK();
-          }
-          else
-            break;
         }
+
+        /*
+        printf("\t 옵션을 선택하세요 \n\t 1. 대출(회원) \t 2.삭제(관리자)");
+        scanf("%s", &answer);
+        printf("\n");
+        if (answer == 1)
+        {
+          //code
+        }
+        */
       }
       break;
 
@@ -86,24 +106,7 @@ int search_BOOK()
       break;
 
     case 3:
-      printf("\n");
-      printf("**************************[ B o o k   l i s t ]******************************\n\n");
-      if (stat(BOOK_FILE_NAME, &sk) == ERROR_NOT_FOUND)
-      {
-        perror("stat");
-        exit(EXIT_FAILURE);
-      }
-      file_contents = malloc(sk.st_size);
-      i = 1;
-      while (fscanf(b_fp, "%[^\n] ", file_contents) != EOF)
-      {
-        printf("\t [%d] %s\n", i, file_contents);
-        i++;
-      }
-      free(file_contents);
-      printf("\n");
-      printf("*********************************************************************************\n");
-      printf("\n");
+      Book_list(b_fp, file_contents);
       printf("\t (!) 목록에서 원하는 도서를 찾으시려면 1을 입력해 주세요 : \n");
       scanf("%d", &j);
       while (j != ERROR_NOT_FOUND)
@@ -128,30 +131,6 @@ int search_BOOK()
     fclose(b_fp);
   }
 }
-
-// int search_BOOK()
-// {
-//   STD_Mib *pStd_ptr = GET_STD_PTR();
-//   int val = -3;
-//   char title[30];
-//   printf("=============================\n");
-//   printf("======= 도서검색 페이지 =======\n");
-//   printf("=============================\n");
-//   printf("제목을 입력하세요 : ");
-//   scanf("%s", title);
-//   printf("\n");
-//   for (int i = 0; i < pStd_ptr->b_idx; i++)
-//   {
-//     printf("#%d %s/%s\n", i, title, pStd_ptr->BOOK_in[i].title);
-//     if (strcmp(title, pStd_ptr->BOOK_in[i].title) == 0)
-//     {
-//       val = i;
-//       break;
-//     }
-//   }
-//   printf("\n");
-//   return val;
-// }
 
 void add_BOOK()
 {
@@ -299,7 +278,6 @@ int Get_bookfile_line(char *pfile_data, size_t file_size, char type, char *find_
     {
       if ((comma_cnt == type) && (strncmp(temp_string, proc_string, proc_cnt) == 0))
       {
-        printf("find type : %d, find string : %s\n", type, temp_string);
         break;
       }
       memset(temp_string, 0x0, TYPE_LEN);
@@ -327,10 +305,8 @@ void Delete_book_file_line(int file, char *pfile_data, size_t file_size, int lin
   {
     if (pfile_data[i] == ASCII_LINEFEED)
     {
-
       if (line_cnt == curr_lint_cnt)
       {
-
         break;
       }
       curr_lint_cnt++;
@@ -366,10 +342,10 @@ void delete_BOOK()
   }
   else
   {
+    printf("\n");
     printf(">>> MAIN >> BOOK >> 도서삭제 ----------------------------------------\n\n");
-    // 파일 전체를 메모리에 매핑
 
-    printf("대여할 도서의 제목을 입력해 주세요: ");
+    printf("삭제할 도서의 제목을 입력해 주세요: ");
     scanf("%s", rent_book);
     printf("\n");
 
@@ -379,6 +355,7 @@ void delete_BOOK()
     // printf("삭제할 줄의 번호는 %d입니다.\n", line_cnt);
     //  삭제
     Delete_book_file_line(b_fp, addr, file_size, line_cnt);
+    printf("도서가 삭제되었습니다.");
 
     munmap(addr, file_size); // 메모리 매핑 해제
 

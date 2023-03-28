@@ -75,7 +75,7 @@ int main()
       break;
 
     case 4: /* 종료 */
-      printf(" 곧 오픈합니다. 또 오세용 (찡긋) \n");
+      // printf(" 곧 오픈합니다. 또 오세용 (찡긋) \n");
       pStd_ptr->rel = 0;
       break;
 

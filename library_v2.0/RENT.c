@@ -13,8 +13,18 @@ void Set_bookfile_rent_stat(char *pfile_data, size_t file_size, int line_cnt, ch
       curr_lint_cnt++;
       if (line_cnt == curr_lint_cnt)
       {
-        pfile_data[i - 1] = rent_stat;
-        break;
+        if (pfile_data[i - 1] == '0')
+        {
+          printf("(!) 대여중인 도서입니다. 다른 책을 검색해주세요.\n\n");
+          rent_BOOK();
+        }
+        else
+        {
+          pfile_data[i - 1] = rent_stat;
+          printf("대여가 완료되었습니다. 메인페이지로 돌아갑니다.");
+          // printf("%c\n", pfile_data[i - 1]);
+          break;
+        }
       }
     }
   }
@@ -43,35 +53,26 @@ void rent_BOOK() // 도서대출 - 회원용
   int fd;
   void *file_memory;
   char *rent_book[10];
-  // int rent_mem;
+  int rent_mem;
   char *token;
   int i, j;
+  int answer;
 
   // printf("등록 회원 수 : %d\n", pStd_ptr->h_idx); //test code
-  for (int j = 0; j < pStd_ptr->h_idx; j++)
-  {
-    printf("%s, %s, %s\r\n",
-           pStd_ptr->MEM_in[j].name,
-           pStd_ptr->MEM_in[j].phone,
-           pStd_ptr->MEM_in[j].gene);
-  }
+  // for (int j = 0; j < pStd_ptr->h_idx; j++)
+  // {
+  //   printf("%s, %s, %s\r\n",
+  //          pStd_ptr->MEM_in[j].name,
+  //          pStd_ptr->MEM_in[j].phone,
+  //          pStd_ptr->MEM_in[j].gene);
+  // }
   // printf("대여할 회원의 핸드폰 번호 뒷자리를 입력해 주세요: ");
   // scanf("%d", rent_mem);
-  printf("\n");
+  // printf("\n");
 
   // pStd_ptr->RE[pStd_ptr->r_idx].mem_phon = rent_mem; // 회원번호
-  /*
-  FIXME: search_book() case 3번에 조건을 붙인다
-  for (int i = 0; i < pStd_ptr->b_idx + 1; i++)
-  {
-    printf(" 도서 대출 가능 권수 : %d\n", pStd_ptr->b_idx + 1);
-    printf("도서번호: %d, 제목: %s, 저자: %s, 장르: %s \r\n",
-           pStd_ptr->BOOK_in[i].book_num,
-           pStd_ptr->BOOK_in[i].title,
-           pStd_ptr->BOOK_in[i].auth,
-           pStd_ptr->BOOK_in[i].genre);
-   }
-   */
+
+  // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
 
   fd = open(BOOK_FILE_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   file_memory = mmap(0, FILE_LENGTH, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
@@ -89,73 +90,25 @@ void rent_BOOK() // 도서대출 - 회원용
   printf("\n");
 
   // 찾는 조건을 입력하고 해당 줄수를 리턴 받기
-  line_cnt = Get_bookfile_line(file_memory, file_size, pStd_ptr->BOOK_in[i].title, rent_book);
+  line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_TITLE, rent_book);
   // 라인 수를 입력하면 대출여부 변경 설정
   Set_bookfile_rent_stat(file_memory, file_size, line_cnt, '0');
+  // printf(" 도서 '%s' 가 대출되었습니다. ", rent_book);
 
   // unmap and close
   munmap(file_memory, FILE_LENGTH);
   close(fd);
 
   /*
-    // FIXME: 대여일자 출력.
-    timer = (time_t)time(NULL);
-    pStd_ptr->RE[pStd_ptr->r_idx].rent_date = timer;
-    pStd_ptr->RE[pStd_ptr->r_idx].due_date = (timer + 259200); // 대여일 3일
-{
-  char temp_string[TYPE_LEN] = {0}; // 파일내에서 찾은 문자
-  char proc_string[TYPE_LEN] = {0}; // find_string에서 공백(0x20)을 제거한 문자
-  int i;
-  int proc_cnt = 0;  // 공백제거문자 길이
-  int temp_cnt = 0;  // 파일내에 찾은 문자 길이
-  int comma_cnt = 0; // 줄안에 콤마 개수
-  int line_cnt = 0;  // 찾는 문자열의 라인수
-  // 찾는 문자열내에 공백 제거하기
-  for (i = 0; i < strlen(find_string); i++)
-  {
-    if (find_string[i] != ASCII_SPACE)
-    {
-      proc_string[proc_cnt++] = find_string[i];
-    }
-  }
-  for (i = 0; i < file_size; i++)
-  {
+  // TODO: 대여일자 출력.
+  timer = (time_t)time(NULL);
+  pStd_ptr->RE[pStd_ptr->r_idx].rent_date = timer;
+  pStd_ptr->RE[pStd_ptr->r_idx].due_date = (timer + 259200); // 대여일 3일
 
-    // 콤마(0x2C)/빈공간(0x20)이 아니면 문자열 저장 (찾는 문자열내에 공백 제거)
-    if (pfile_data[i] != ASCII_COMMA && pfile_data[i] != ASCII_SPACE)
-    {
-      temp_string[temp_cnt++] = pfile_data[i];
-    }
-    // 콤마인 경우 저장한 문자열을 찾는 조건과 비교
-    else if (pfile_data[i] == ASCII_COMMA)
-    {
-      // 찾는 요소(ELEM)와 문자열 조건이 맞는지 비교
-      if ((comma_cnt == type) && (strncmp(temp_string, proc_string, proc_cnt) == 0))
-      {
-        printf("find type : %d, find string : %s\n", type, temp_string);
-        break;
-      }
-      // 다음 요소 문자열 저장을 위해 변수 초기화 및 콤마 카운팅
-      memset(temp_string, 0x0, TYPE_LEN);
-      temp_cnt = 0;
-      comma_cnt++;
-    }
-    // 줄바꿈인 경우에는 변수들 초기화 및 줄수 카운팅
-    if (pfile_data[i] == ASCII_LINEFEED)
-    {
-      memset(temp_string, 0x0, TYPE_LEN);
-      temp_cnt = 0;
-      comma_cnt = 0;
-      line_cnt++;
-    }
-  }
-  // 카운팅된 줄수 리턴
-  return line_cnt;
-}
-    t = localtime(&timer);
+  t = localtime(&timer);
 
-    printf("회원번호 %d님, 대여 완료되었습니다.[Date_%d년_%d월_%d일]\n", rent_mem, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
-    pStd_ptr->r_idx++;
+  printf("회원번호 %d님, 대여 완료되었습니다.[Date_%d년_%d월_%d일]\n", rent_mem, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday);
+  pStd_ptr->r_idx++;
   */
 }
 

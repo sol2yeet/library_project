@@ -13,6 +13,7 @@
 #define BOOK_FILE_NAME "BOOK.txt"
 
 // int sort_BOOK();
+void Book_list(char *file, char *pfile_data);
 int search_BOOK();
 void add_BOOK();
 void input_BOOK();
