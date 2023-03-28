@@ -2,6 +2,7 @@
 #include "BOOK.h"
 #include "MEM.h"
 #include "RENT.h"
+
 STD_Mib std_mib;
 
 int BOOK_SW(int F_B)
@@ -69,6 +70,7 @@ int MEM_SW(int F_B)
   STD_Mib *pStd_ptr = GET_STD_PTR();
   switch (pStd_ptr->F_B)
   {
+
   case 1: /* 회원검색 */
     printf("\n");
     MEM = search_MEM();
@@ -93,6 +95,10 @@ int MEM_SW(int F_B)
     delete_MEM();
     break;
 
+  case 4:
+    printf("뒤로가기\n ");
+    break;
+
   case 5: /*전체 회원 목록 불러오기 */
     printf("\n");
     sort_MEM();
@@ -107,9 +113,6 @@ int MEM_SW(int F_B)
     {
       break;
     }
-  case 4:
-    printf("뒤로가기\n ");
-    break;
 
   default:
     printf("잘못된 숫자를 입력하셨습니다. \n\n");
@@ -136,6 +139,7 @@ int RENT_SW(int F_B)
   int j;
   switch (F_B)
   {
+
   case 1:
     printf("도서 대출\n");
     rent_BOOK();
@@ -146,23 +150,12 @@ int RENT_SW(int F_B)
     return_BOOK();
     break;
 
-    // case :
-    //   printf("대여현황\n");
-    //   rent_list();
-    //   printf("\n");
-    //   printf("목록을 그만 보고 싶으면 1을 눌러 주세요 : ");
-    //   scanf("%d", &j);
-    //   printf("\n");
-    //   if (j == 1)
-    //   {
-    //     break;
-    //   }
-
   case 3:
     printf("뒤로가기\n");
     break;
   default:
     printf("잘못된 숫자를 입력하셨습니다. \n\n");
   }
+
   return 0;
 };

@@ -1,80 +1,28 @@
 #include "RENT.h"
 #include "BOOK.h"
 #include "STD.h"
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/mman.h>
-#include <fcntl.h>
-#include <unistd.h>
 
-#define ERROR_NOT_FOUND -1
-#define FILE_LENGTH 0x100
-
-#define TYPE_LEN 512
-#define ASCII_COMMA 0x2C
-#define ASCII_LINEFEED 0x0A
-#define ASCII_SPACE 0x20
-
-enum
+void Set_bookfile_rent_stat(char *pfile_data, size_t file_size, int line_cnt, char rent_stat)
 {
-  ELEM_TYPE_BOOK_NUM = 0,
-  ELEM_TYPE_TITLE,
-  ELEM_TYPE_AUTH,
-  ELEM_TYPE_GENRE,
-  ELEM_TYPE_PUBL
-};
+  int curr_lint_cnt = 0;
 
-int Get_bookfile_line(char *pfile_data, size_t file_size, char type, char *find_string)
-{
-  char temp_string[TYPE_LEN] = {0}; // 파일내에서 찾은 문자
-  char proc_string[TYPE_LEN] = {0}; // find_string에서 공백(0x20)을 제거한 문자
-  int i;
-  int proc_cnt = 0;  // 공백제거문자 길이
-  int temp_cnt = 0;  // 파일내에 찾은 문자 길이
-  int comma_cnt = 0; // 줄안에 콤마 개수
-  int line_cnt = 0;  // 찾는 문자열의 라인수
-
-  // 찾는 문자열내에 공백 제거하기
-  for (i = 0; i < strlen(find_string); i++)
+  for (int i = 0; i < file_size; i++)
   {
-    if (find_string[i] != ASCII_SPACE)
-    {
-      proc_string[proc_cnt++] = find_string[i];
-    }
-  }
-  for (i = 0; i < file_size; i++)
-  {
-    // 콤마(0x2C)/빈공간(0x20)이 아니면 문자열 저장 (찾는 문자열내에 공백 제거)
-    if (pfile_data[i] != ASCII_COMMA && pfile_data[i] != ASCII_SPACE)
-    {
-      temp_string[temp_cnt++] = pfile_data[i];
-    }
-    else if (pfile_data[i] == ASCII_COMMA)
-    {
-      if ((comma_cnt == type) && (strncmp(temp_string, proc_string, proc_cnt) == 0))
-      {
-        printf("find type : %d, find string : %s\n", type, temp_string);
-        break;
-      }
-      memset(temp_string, 0x0, TYPE_LEN);
-      temp_cnt = 0;
-      comma_cnt++;
-    }
     if (pfile_data[i] == ASCII_LINEFEED)
     {
-      memset(temp_string, 0x0, TYPE_LEN);
-      temp_cnt = 0;
-      comma_cnt = 0;
-      line_cnt++;
+      curr_lint_cnt++;
+      if (line_cnt == curr_lint_cnt)
+      {
+        pfile_data[i - 1] = rent_stat;
+        break;
+      }
     }
   }
-  return line_cnt + 1;
 }
 
 void rent_BOOK() // 도서대출 - 회원용
 {
+
   /* TODO:
   1. 회원의 대출 권수를 알수있는 변수를 선언하고 회원파일에 적용(index).
   2. 최대 대출권수 제한 한다 (if 조건문)
@@ -128,6 +76,7 @@ void rent_BOOK() // 도서대출 - 회원용
   fd = open(BOOK_FILE_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   file_memory = mmap(0, FILE_LENGTH, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
   size_t file_size = lseek(fd, 0, SEEK_END);
+  int line_cnt;
 
   if (file_memory == MAP_FAILED)
   {
@@ -140,27 +89,9 @@ void rent_BOOK() // 도서대출 - 회원용
   printf("\n");
 
   // 찾는 조건을 입력하고 해당 줄수를 리턴 받기
-  int line_cnt;
-  line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_AUTH, rent_book);
-
-  printf("result line : %d\n", line_cnt);
-
-  for (i = 0; i < FILE_LENGTH; i++)
-  {
-    if (((char *)file_memory)[i] == rent_book[0])
-    {
-      // Find end of line
-      for (j = i + 1; j < FILE_LENGTH; j++)
-      {
-        if (((char *)file_memory)[j] == 0x0a)
-        // if (((char *)file_memory)[j] == 0x0d)
-        {
-          break;
-        }
-      }
-    }
-    ((char *)file_memory)[j - 2] = '0';
-  }
+  line_cnt = Get_bookfile_line(file_memory, file_size, pStd_ptr->BOOK_in[i].title, rent_book);
+  // 라인 수를 입력하면 대출여부 변경 설정
+  Set_bookfile_rent_stat(file_memory, file_size, line_cnt, '0');
 
   // unmap and close
   munmap(file_memory, FILE_LENGTH);
@@ -236,7 +167,6 @@ void return_BOOK() // 도서반납 - 회원용
   3. 반납시 book.txt 인덱스가 변경된다 --> 대출기능의 mmap 가져오기
   4. 반납 기능을 계속 반복할 수 있도록 while문 사용
   +추가) 연체된 경우 알림을 준다.  */
-
   STD_Mib *pStd_ptr = GET_STD_PTR();
   printf("핸드폰번호로 회원정보를 조회하세요 : ");
   // mem.txt 문자열비교

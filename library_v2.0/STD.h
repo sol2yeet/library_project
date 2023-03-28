@@ -5,11 +5,30 @@
 #include <string.h>
 #include <memory.h>
 #include <time.h>
+
+#define MAX_LENGTH 256
+#define ERROR_NOT_FOUND -1
 #define PROG_RUN 1
 #define PROG_EXIT 0
 #define _CRT_SECURE_NO_WARNINGS
+#define TYPE_LEN 512
+#define ASCII_LINEFEED 0x0A
+#define FILE_LENGTH 0x100
+#define ASCII_COMMA 0x2C
+#define ASCII_LINEFEED 0x0A
+#define ASCII_SPACE 0x20
+#define RENT_STAT
 
 /* Variation */
+
+enum
+{
+  ELEM_TYPE_BOOK_NUM = 0,
+  ELEM_TYPE_TITLE,
+  ELEM_TYPE_AUTH,
+  ELEM_TYPE_GENRE,
+  ELEM_TYPE_PUBL
+};
 typedef struct BOOK
 {
   char title[30];

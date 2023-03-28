@@ -1,8 +1,6 @@
 #include "MEM.h"
 #include "STD.h"
 #include <sys/stat.h>
-#define MAX_LENGTH 256
-#define ERROR_NOT_FOUND -1
 
 int sort_MEM()
 {
@@ -50,7 +48,7 @@ int search_MEM()
   int i;
   char phone[30];
   STD_Mib *pStd_ptr = GET_STD_PTR();
-  printf("전화번호 : ");
+  printf("\t전화번호 : ");
   scanf("%s", phone);
   printf("\n");
 
@@ -112,6 +110,7 @@ void input_MEM()
     perror("Could not open data file");
     exit(EXIT_FAILURE);
   }
+
   else
   {
     // 회원파일 입력
