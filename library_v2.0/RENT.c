@@ -72,7 +72,7 @@ void rent_BOOK()
 
   int fd;
   void *file_memory;
-  char *rent_book[10];
+  char rent_book[10];
   int rent_mem;
   char *token;
   int i, j;
@@ -104,7 +104,7 @@ void rent_BOOK()
   }
 
   printf("대여할 도서의 제목을 입력해 주세요: ");
-  scanf("%s", &rent_book);
+  scanf("%s", rent_book);
   printf("\n");
 
   line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_TITLE, rent_book);
@@ -138,7 +138,7 @@ void return_BOOK()
 
   int fd;
   void *file_memory;
-  char *return_book[10];
+  char return_book[10];
   int return_mem;
   char *token;
   int i, j;
@@ -196,7 +196,7 @@ void return_BOOK()
   }
 
   printf("반납할 도서의 제목을 입력해 주세요: ");
-  scanf("%s", &return_book);
+  scanf("%s", return_book);
   printf("\n");
 
   line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_TITLE, return_book);

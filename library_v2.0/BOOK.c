@@ -17,7 +17,7 @@ void Book_list(char *file, char *pfile_data)
   }
 
   pfile_data = malloc(sk.st_size);
-  while (fscanf(file, "%[^\n] ", pfile_data) != EOF)
+  while (fscanf((FILE *)file, "%[^\n] ", pfile_data) != EOF)
   {
     printf("\t [%d] %s\n", i, pfile_data);
     i++;
@@ -61,7 +61,7 @@ void search_BOOK()
 
     case 1:
       printf("\t제목을 입력하세요 : ");
-      scanf("%s", &title);
+      scanf("%s", title);
       printf("\n");
 
       for (int i = 0; i < pStd_ptr->b_idx; i++)
@@ -84,12 +84,12 @@ void search_BOOK()
         //   {
         //     delete_BOOK();
         //   }
-            }
+      }
       break;
 
     case 2:
       printf("\t장르를 입력하세요 : ");
-      scanf("%s", &category);
+      scanf("%s", category);
       printf("\n");
 
       for (int i = 0; i < pStd_ptr->b_idx; i++)
@@ -103,7 +103,7 @@ void search_BOOK()
           scanf("%d", &answer);
           if (answer == 1)
           {
-            int RENT_SW(answer);
+            RENT_SW(answer);
           }
           else
             break;
@@ -112,7 +112,7 @@ void search_BOOK()
       break;
 
     case 3:
-      Book_list(b_fp, file_contents);
+      Book_list((char *)b_fp, file_contents);
       printf("\t (!) 목록에서 원하는 도서를 찾으시려면 1을 입력해 주세요 : \n");
       scanf("%d", &j);
       while (j != ERROR_NOT_FOUND)
@@ -154,8 +154,6 @@ void add_BOOK()
     printf(">>> MAIN >> BOOK >> 도서추가 ----------------------------------------\n\n");
     if (b_fp != NULL)
     {
-      printf("식별번호\t: ");
-      scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num);
       printf("제목\t: ");
       scanf("%s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].title);
       printf("작가\t: ");
@@ -173,8 +171,7 @@ void add_BOOK()
 
       case 1:
         pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta = 1; // 도서있음(1) / 도서 없음(0)
-        fprintf(b_fp, "%d, %s, %s, %s, %s, %d\r\n",
-                pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num,
+        fprintf(b_fp, "%s, %s, %s, %s, %d\r\n",
                 pStd_ptr->BOOK_in[pStd_ptr->b_idx].title,
                 pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth,
                 pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre,
@@ -217,33 +214,30 @@ void input_BOOK()
     printf(" ");
     while (fscanf(b_fp, "%s", line) > 0)
     {
-      if (word_cnt > 5)
+      if (word_cnt > 4)
       {
         word_cnt = 0;
         pStd_ptr->b_idx++;
       }
       ptr = strtok(line, ",");
+      word_cnt++;
       {
-        word_cnt++;
         switch (word_cnt)
         {
-        case 1:
-          pStd_ptr->BOOK_in[pStd_ptr->b_idx].book_num = atoi(ptr);
-          break;
 
-        case 2:
+        case 1:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, ptr);
           break;
 
-        case 3:
+        case 2:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, ptr);
           break;
 
-        case 4:
+        case 3:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, ptr);
           break;
 
-        case 5:
+        case 4:
           strcpy(pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ, ptr);
           break;
         }
@@ -338,7 +332,7 @@ void delete_BOOK()
   int line_cnt;
   char rent_book[30];
 
-  if (b_fp == NULL)
+  if (b_fp == ERROR_NOT_FOUND)
   {
     perror("Could not open data file");
     exit(EXIT_FAILURE);

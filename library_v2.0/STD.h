@@ -21,22 +21,12 @@
 
 /* Variation */
 
-enum
-{
-  ELEM_TYPE_BOOK_NUM = 0,
-  ELEM_TYPE_TITLE,
-  ELEM_TYPE_AUTH,
-  ELEM_TYPE_GENRE,
-  ELEM_TYPE_PUBL
-};
-
 typedef struct BOOK
 {
   char title[30];
   char auth[30];
   char genre[10];
   char publ[30];
-  int book_num;
   int b_sta; // 0: 대여, 1:반납
 } BOOK;
 

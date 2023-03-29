@@ -12,6 +12,13 @@
 
 #define MEM_FILE_NAME "MEM.txt"
 
+typedef enum member
+{
+  ELEM_TYPE_NAME,
+  ELEM_TYPE_PHONE,
+  ELEM_TYPE_GENE
+} member;
+
 int MEM_list();
 void search_MEM();
 void add_MEM();

@@ -12,6 +12,14 @@
 
 #define BOOK_FILE_NAME "BOOK.txt"
 
+typedef enum book
+{
+  ELEM_TYPE_TITLE,
+  ELEM_TYPE_AUTH,
+  ELEM_TYPE_GENRE,
+  ELEM_TYPE_PUBL
+} book;
+
 void search_BOOK();
 void add_BOOK();
 void input_BOOK();

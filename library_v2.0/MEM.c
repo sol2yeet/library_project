@@ -57,7 +57,7 @@ void search_MEM()
   else
   {
     printf("\t전화번호 뒤4자리를 입력하세요. : ");
-    scanf("%s", &h_phone);
+    scanf("%s", h_phone);
     printf("\n");
 
     for (int i = 0; i < pStd_ptr->h_idx; i++)
@@ -189,7 +189,7 @@ void delete_MEM()
   int line_cnt;
   char del_member[30];
 
-  if (b_fp == NULL)
+  if (b_fp == ERROR_NOT_FOUND)
   {
     perror("Could not open data file");
     exit(EXIT_FAILURE);
@@ -203,7 +203,7 @@ void delete_MEM()
     scanf("%s", del_member);
     printf("\n");
 
-    line_cnt = Get_bookfile_line(addr, file_size, ELEM_TYPE_TITLE, del_member);
+    line_cnt = Get_bookfile_line(addr, file_size, ELEM_TYPE_PHONE, del_member);
 
     Delete_book_file_line(b_fp, addr, file_size, line_cnt);
     printf("회원이 삭제되었습니다.");
