@@ -2,7 +2,7 @@
 #include "STD.h"
 #include "BOOK.h"
 
-int sort_MEM()
+int MEM_list()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
   FILE *h_fp = fopen(MEM_FILE_NAME, "rb");
@@ -18,9 +18,8 @@ int sort_MEM()
     struct stat sb;
     int i = 1;
 
-    printf("=============================\n");
-    printf("========== 회원 목록 =========\n");
-    printf("=============================\n");
+    printf("\n");
+    printf("**************************[ M e m b e r   l i s t ]******************************\n\n");
 
     if (stat(MEM_FILE_NAME, &sb) == -1)
     {
@@ -35,38 +34,21 @@ int sort_MEM()
       printf("[%d] %s\n", i, file_contents);
       i++;
     }
-    printf("\n");
-    printf("================================\n\n");
 
     free(file_contents);
+    printf("\n");
+    printf("*******************************************************************************\n");
+    printf("\n");
     fclose(h_fp);
   }
 }
 
-int search_MEM()
-{
-  int i;
-  char phone[30];
-  STD_Mib *pStd_ptr = GET_STD_PTR();
-  printf("\t전화번호 : ");
-  scanf("%s", phone);
-  printf("\n");
-
-  for (i = 0; i < pStd_ptr->h_idx; i++)
-  {
-    if (strcmp(phone, pStd_ptr->MEM_in[i].phone) == 0)
-      return i;
-  }
-  printf("\n");
-  return ERROR_NOT_FOUND;
-}
-
-void add_MEM()
+void search_MEM()
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
+  FILE *h_fp = fopen(MEM_FILE_NAME, "rb");
+  char h_phone[30];
 
-  FILE *h_fp = NULL;
-  h_fp = fopen(MEM_FILE_NAME, "a");
   if (h_fp == NULL)
   {
     perror("Could not open data file");
@@ -74,26 +56,78 @@ void add_MEM()
   }
   else
   {
-    printf("=============================\n");
-    printf("======= 회원등록 페이지 =======\n");
-    printf("=============================\n");
-
-    // 구조체 배열에 고객 정보를 입력받음
-    printf("성함\t: ");
-    scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].name);
-    printf("전화번호 뒷자리 : ");
-    scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].phone);
-    printf("성별\t: ");
-    scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].gene);
+    printf("\t전화번호 뒤4자리를 입력하세요. : ");
+    scanf("%s", &h_phone);
     printf("\n");
 
-    fprintf(h_fp, "%s, %s, %s\r\n", pStd_ptr->MEM_in[pStd_ptr->h_idx].name, pStd_ptr->MEM_in[pStd_ptr->h_idx].phone, pStd_ptr->MEM_in[pStd_ptr->h_idx].gene);
-    pStd_ptr->h_idx++;
+    for (int i = 0; i < pStd_ptr->h_idx; i++)
+    {
+      if (strcmp(h_phone, pStd_ptr->MEM_in[i].phone) == 0)
+      {
+        printf("\t**** 검색된 회원 정보 ****\n\t 이름: %s \n\t 번호: %s \n\t 성별: %s \n",
+               pStd_ptr->MEM_in[i].name,
+               pStd_ptr->MEM_in[i].phone,
+               pStd_ptr->MEM_in[i].gene);
+        printf("\n");
+      }
+    }
+  }
+  fclose(h_fp);
+}
 
-    printf("\n%d 번째 회원 입니다.\n", pStd_ptr->h_idx);
-    printf("\n\n");
+void add_MEM()
+{
+  STD_Mib *pStd_ptr = GET_STD_PTR();
+  int answer;
+  FILE *h_fp;
+  h_fp = fopen(MEM_FILE_NAME, "a");
+  int mem_line_cnt;
 
-    fclose(h_fp);
+  if (h_fp == NULL)
+  {
+    perror("Could not open data file");
+    exit(EXIT_FAILURE);
+  }
+  else
+  {
+    printf(">>> MAIN >> Membership >> 회원추가 -------------------------------------\n\n");
+    if (h_fp != NULL)
+    {
+      printf("성함\t: ");
+      scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].name);
+      printf("전화번호 뒷자리 : ");
+      scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].phone);
+      printf("성별\t: ");
+      scanf("%s", pStd_ptr->MEM_in[pStd_ptr->h_idx].gene);
+      printf("\n");
+
+      printf("등록하시하시겠습니까?\n  1.넵 \t2.아니오  ");
+      // scanf("%d", &pStd_ptr->BOOK_in[pStd_ptr->b_idx].b_sta);
+      scanf("%d", &answer);
+      switch (answer)
+      {
+
+      case 1:
+
+        fprintf(h_fp, "%s, %s, %s\r\n",
+                pStd_ptr->MEM_in[pStd_ptr->h_idx].name,
+                pStd_ptr->MEM_in[pStd_ptr->h_idx].phone,
+                pStd_ptr->MEM_in[pStd_ptr->h_idx].gene);
+        pStd_ptr->h_idx++;
+
+        printf("\n");
+        printf(" 회원 등록이 완료되었습니다. 초기화면으로 돌아갑니다...");
+        break;
+
+      case 2:
+        MEM_SW(answer);
+        break;
+
+      default:
+        break;
+      }
+      fclose(h_fp);
+    }
   }
 }
 
@@ -113,50 +147,39 @@ void input_MEM()
 
   else
   {
-    // 회원파일 입력
+    printf(" ");
     while (fscanf(h_fp, "%s", line) > 0)
     {
-      word_cnt = 0;
-      ptr = strtok(line, ",");
-      while (ptr != NULL)
+      if (word_cnt > 3)
       {
-        if (word_cnt > 3)
-        {
-          word_cnt = 0;
-          pStd_ptr->h_idx++;
-        }
-
+        word_cnt = 0;
+        pStd_ptr->h_idx++;
+      }
+      ptr = strtok(line, ",");
+      word_cnt++;
+      {
         switch (word_cnt)
         {
-        case 1: // char name
+        case 1:
           strcpy(pStd_ptr->MEM_in[pStd_ptr->h_idx].name, ptr);
           break;
 
-        case 2: // char phone
+        case 2:
           strcpy(pStd_ptr->MEM_in[pStd_ptr->h_idx].phone, ptr);
           break;
 
-        case 3: // char gene
+        case 3:
           strcpy(pStd_ptr->MEM_in[pStd_ptr->h_idx].gene, ptr);
           break;
         }
         ptr = strtok(NULL, ",");
-
-        // strtok 문자열 자르기
-        // atoi 문자 >>> 숫자 변환
       }
     }
     fclose(h_fp);
-    // 회원정보 입력
   }
 }
 
 void delete_MEM()
-
-// 입력받기
-// 입력받은 문자열과 비교
-// 해당 줄수 리턴
-// 해당줄의 맨앞과 맨뒤 구해서 삭제
 
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
@@ -180,15 +203,12 @@ void delete_MEM()
     scanf("%s", del_member);
     printf("\n");
 
-    // 찾는 조건을 입력하고 해당 줄수를 리턴 받기
     line_cnt = Get_bookfile_line(addr, file_size, ELEM_TYPE_TITLE, del_member);
 
-    // printf("삭제할 줄의 번호는 %d입니다.\n", line_cnt);
-    //  삭제
     Delete_book_file_line(b_fp, addr, file_size, line_cnt);
     printf("회원이 삭제되었습니다.");
 
-    munmap(addr, file_size); // 메모리 매핑 해제
+    munmap(addr, file_size);
 
     printf("\n");
     close(b_fp);

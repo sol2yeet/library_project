@@ -1,7 +1,7 @@
-#include "STD.h"  // 함수 변수
-#include "BOOK.h" // 책
-#include "MEM.h"  // 회원
-#include "RENT.h" // 대여 반납
+#include "STD.h"
+#include "BOOK.h"
+#include "MEM.h"
+#include "RENT.h"
 
 int main()
 {
@@ -51,16 +51,16 @@ int main()
       printf("|               1. 검색                  |\n");
       printf("|               2. 등록                  |\n");
       printf("|               3. 삭제                  |\n");
-      printf("|               4. MAIN --->             |\n");
+      printf("|               4. 목록                  |\n");
+      printf("|               5. MAIN --->             |\n");
       printf("|                                        |\n");
       printf("|----------------------------------------|\n");
-      printf("입력 (5번 전체목록): ");
-      // printf("4. 회원 목록 보기 \n");
+      printf("입력 : ");
       scanf("%d", &(pStd_ptr->F_B));
       MEM_SW(pStd_ptr->F_B);
       break;
 
-    case 3: /* 대출 반납 */
+    case 3:
       printf("\n");
       printf("|>> MAIN >>------Membership--------------|\n");
       printf("|                                        |\n");
@@ -75,7 +75,7 @@ int main()
       break;
 
     case 4: /* 종료 */
-      // printf(" 곧 오픈합니다. 또 오세용 (찡긋) \n");
+      printf(" 곧 오픈합니다. 또 오세용 \n");
       pStd_ptr->rel = 0;
       break;
 

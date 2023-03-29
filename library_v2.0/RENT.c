@@ -15,13 +15,41 @@ void Set_bookfile_rent_stat(char *pfile_data, size_t file_size, int line_cnt, ch
       {
         if (pfile_data[i - 1] == '0')
         {
-          printf("(!) 대여중인 도서입니다. 다른 책을 검색해주세요.\n\n");
+          printf("(!) 대여중인 도서입니다. 다른 책을 검색해주세요.\n");
           rent_BOOK();
         }
         else
         {
           pfile_data[i - 1] = rent_stat;
           printf("대여가 완료되었습니다. 메인페이지로 돌아갑니다.");
+          break;
+        }
+      }
+    }
+  }
+}
+
+void Set_bookfile_return_stat(char *pfile_data, size_t file_size, int line_cnt, char rent_stat)
+{
+  int curr_lint_cnt = 0;
+
+  for (int i = 0; i < file_size; i++)
+  {
+    if (pfile_data[i] == ASCII_LINEFEED)
+    {
+      curr_lint_cnt++;
+      if (line_cnt == curr_lint_cnt)
+      {
+
+        if (pfile_data[i - 1] == '1')
+        {
+          printf("(!) 이미 반납되었습니다. 다음 책을 입력해주세요.\n");
+          return_BOOK();
+        }
+        else
+        {
+          pfile_data[i - 1] = rent_stat;
+          printf("반납이 완료되었습니다. 메인페이지로 돌아갑니다.");
           // printf("%c\n", pfile_data[i - 1]);
           break;
         }
@@ -30,7 +58,7 @@ void Set_bookfile_rent_stat(char *pfile_data, size_t file_size, int line_cnt, ch
   }
 }
 
-void rent_BOOK() // 도서대출 - 회원용
+void rent_BOOK()
 {
 
   /* TODO:
@@ -39,16 +67,8 @@ void rent_BOOK() // 도서대출 - 회원용
   3. 대출 기능을 계속 반복할 수 있도록 while문으로 반복(변수 < 4) 3권을 넘으면 반복문이 끝난다.
   4. rent.txt 파일을 만들고 [폰번호, 제목] 형식으로 저장한다. (대출목록 출력용)
   */
+
   STD_Mib *pStd_ptr = GET_STD_PTR();
-  /*
-    printf("핸드폰번호로 회원정보를 조회하세요 : ");
-    // mem.txt 문자열비교
-    printf(" %s 회원님 반갑습니다.\n");
-    printf("대출할 책을 입력해주세요 : ");
-    // 대출기능에서 mmap 기능을 가져와서 while반복문 (입력 != 1)
-    printf(" %s의 반납이 완료되었습니다.");
-    printf("반납을 끝내고 돌아가려면 1을 입력해주세요.");
-  */
 
   int fd;
   void *file_memory;
@@ -58,6 +78,7 @@ void rent_BOOK() // 도서대출 - 회원용
   int i, j;
   int answer;
 
+  // TODO: 회원정보, 대출가능 여부조회
   // printf("등록 회원 수 : %d\n", pStd_ptr->h_idx); //test code
   // for (int j = 0; j < pStd_ptr->h_idx; j++)
   // {
@@ -69,10 +90,7 @@ void rent_BOOK() // 도서대출 - 회원용
   // printf("대여할 회원의 핸드폰 번호 뒷자리를 입력해 주세요: ");
   // scanf("%d", rent_mem);
   // printf("\n");
-
   // pStd_ptr->RE[pStd_ptr->r_idx].mem_phon = rent_mem; // 회원번호
-
-  // TODO: book.txt 문자열 비교 -> 1.대출중인책입니다. 2. 대출화면으로
 
   fd = open(BOOK_FILE_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   file_memory = mmap(0, FILE_LENGTH, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
@@ -89,13 +107,9 @@ void rent_BOOK() // 도서대출 - 회원용
   scanf("%s", &rent_book);
   printf("\n");
 
-  // 찾는 조건을 입력하고 해당 줄수를 리턴 받기
   line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_TITLE, rent_book);
-  // 라인 수를 입력하면 대출여부 변경 설정
   Set_bookfile_rent_stat(file_memory, file_size, line_cnt, '0');
-  // printf(" 도서 '%s' 가 대출되었습니다. ", rent_book);
 
-  // unmap and close
   munmap(file_memory, FILE_LENGTH);
   close(fd);
 
@@ -112,27 +126,25 @@ void rent_BOOK() // 도서대출 - 회원용
   */
 }
 
-void return_BOOK() // 도서반납 - 회원용
+void return_BOOK()
 {
   /* TODO:
   1. 회원정보를 입력한다. --> mem.txt 파일에서 해당하는 정보 읽어오기
   2. 반납할책의 목록이 뜬다. --> 해당 핸드폰번호와 매칭하여 for문으로 rent.txt 파일에서 목록을 읽어옴
   3. 반납시 book.txt 인덱스가 변경된다 --> 대출기능의 mmap 가져오기
-  4. 반납 기능을 계속 반복할 수 있도록 while문 사용
-  +추가) 연체된 경우 알림을 준다.  */
-  STD_Mib *pStd_ptr = GET_STD_PTR();
-  printf("핸드폰번호로 회원정보를 조회하세요 : ");
-  // mem.txt 문자열비교
-  printf(" %s 회원님 반갑습니다.\n");
-  printf("현재 대출중인 책의 목록입니다.");
-  printf("반납할 책이 없습니다."); // NULL
-  // rent.txt 파일에서 읽어온다.
-  printf("반납할 책을 입력해주세요 : ");
-  // 대출기능에서 mmap 기능을 가져와서 while반복문 (입력 != 1)
-  printf(" %s 의 반납이 완료되었습니다.");
-  printf(" 연체되었습니다. 연체 %d 일\n");
-  printf("반납을 끝내고 돌아가려면 1을 입력해주세요.");
+  4. 반납 기능을 계속 반복할 수 있도록 while문 사용 */
 
+  STD_Mib *pStd_ptr = GET_STD_PTR();
+
+  int fd;
+  void *file_memory;
+  char *return_book[10];
+  int return_mem;
+  char *token;
+  int i, j;
+  int answer;
+
+  // TODO: 회원정보, 연체여부 조회
   // FILE *rr_fp = fopen(RENT_FILE_NAME, "a");
   // if (rr_fp == NULL)
   // {
@@ -171,11 +183,32 @@ void return_BOOK() // 도서반납 - 회원용
   //   pStd_ptr->rr_idx++;
   //   fclose(rr_fp);
   //}
+
+  fd = open(BOOK_FILE_NAME, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+  file_memory = mmap(0, FILE_LENGTH, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
+  size_t file_size = lseek(fd, 0, SEEK_END);
+  int line_cnt;
+
+  if (file_memory == MAP_FAILED)
+  {
+    perror("mmap");
+    exit(1);
+  }
+
+  printf("반납할 도서의 제목을 입력해 주세요: ");
+  scanf("%s", &return_book);
+  printf("\n");
+
+  line_cnt = Get_bookfile_line(file_memory, file_size, ELEM_TYPE_TITLE, return_book);
+  Set_bookfile_return_stat(file_memory, file_size, line_cnt, '1');
+
+  munmap(file_memory, FILE_LENGTH);
+  close(fd);
 }
 
 void input_RENT()
 {
-  STD_Mib *pStd_ptr = GET_STD_PTR();
+  // STD_Mib *pStd_ptr = GET_STD_PTR();
   // FILE *r_fp = fopen(RENT_FILE_NAME, "r");
   // if (r_fp == NULL)
   // {
@@ -219,7 +252,7 @@ void input_RENT()
 
 void input_RETURN()
 {
-  STD_Mib *pStd_ptr = GET_STD_PTR();
+  // STD_Mib *pStd_ptr = GET_STD_PTR();
   // FILE *rr_fp = fopen(RENT_FILE_NAME, "r");
   // if (rr_fp == NULL)
   // {

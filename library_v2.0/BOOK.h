@@ -12,12 +12,11 @@
 
 #define BOOK_FILE_NAME "BOOK.txt"
 
-// int sort_BOOK();
-void Book_list(char *file, char *pfile_data);
-int search_BOOK();
+void search_BOOK();
 void add_BOOK();
 void input_BOOK();
 void delete_BOOK();
+void Book_list(char *file, char *pfile_data);
 int Get_bookfile_line(char *pfile_data, size_t file_size, char type, char *find_string);
 void Delete_book_file_line(int file, char *pfile_data, size_t file_size, int line_cnt);
 

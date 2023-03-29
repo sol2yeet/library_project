@@ -9,22 +9,12 @@ int BOOK_SW(int F_B)
 {
   STD_Mib *pStd_ptr = GET_STD_PTR();
   int i, j;
-  // int book;
 
   switch (F_B)
   {
   case 1: /* 도서검색 */
     printf("\n");
     search_BOOK();
-    // book = search_BOOK();
-    //  if (book == -3)
-    //  {
-    //    printf("입력한 제목에 일치하는 책이 없습니다.\n");
-    //  }
-    //  else
-    //  {
-    //    printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s\n", pStd_ptr->BOOK_in[book].title, pStd_ptr->BOOK_in[book].genre, pStd_ptr->BOOK_in[book].auth, pStd_ptr->BOOK_in[book].publ);
-    //  }
     break;
 
   case 2: /* 도서 추가*/
@@ -36,21 +26,6 @@ int BOOK_SW(int F_B)
     printf("\n");
     delete_BOOK();
     break;
-
-    // case 4: /* 책 목록 */
-    // printf("\n");
-    // sort_BOOK();
-    //  for (i = 0; i < pStd_ptr->b_idx; i++)
-    //  {
-    //    printf("도서 정보 \n 제목: %s 장르: %s 작가: %s 출판사: %s", pStd_ptr->BOOK_in[pStd_ptr->b_idx].title, pStd_ptr->BOOK_in[pStd_ptr->b_idx].genre, pStd_ptr->BOOK_in[pStd_ptr->b_idx].auth, pStd_ptr->BOOK_in[pStd_ptr->b_idx].publ);
-    //  }
-    //  printf("\n");
-    // printf("다른 기능을 선택하려면 1을 눌러주세요 : ");
-    // scanf("%d", &j);
-    // if (j == i)
-    //{
-    //   break;
-    // }
 
   case 4:
     printf("뒤로가기\n ");
@@ -68,20 +43,13 @@ int MEM_SW(int F_B)
   int i, j;
   int MEM;
   STD_Mib *pStd_ptr = GET_STD_PTR();
+
   switch (pStd_ptr->F_B)
   {
 
   case 1: /* 회원검색 */
     printf("\n");
-    MEM = search_MEM();
-    if (MEM == -2)
-    {
-      printf("입력한 정보에 일치하는 회원이 없습니다.\n");
-    }
-    else
-    {
-      printf("회원정보\n 이름: %s 핸드폰번호: %s 성별: %s\n", pStd_ptr->MEM_in[MEM].name, pStd_ptr->MEM_in[MEM].phone, pStd_ptr->MEM_in[MEM].gene);
-    }
+    search_MEM();
     break;
 
   case 2: /* 회원 추가 */
@@ -95,24 +63,20 @@ int MEM_SW(int F_B)
     delete_MEM();
     break;
 
-  case 4:
-    printf("뒤로가기\n ");
-    break;
-
-  case 5: /*전체 회원 목록 불러오기 */
+  case 4: /* 회원 목록 */
     printf("\n");
-    sort_MEM();
-    // for (i = 0; i < pStd_ptr->h_idx; i++)
-    // {
-    //   printf("회원정보\n 이름: %s 핸드폰번호: %s 성별: %s\n",  pStd_ptr->MEM_in[MEM].name,  pStd_ptr->MEM_in[MEM].phone,  pStd_ptr->MEM_in[MEM].gene);
-    // }
-    // printf("\n");
-    printf("다른 기능을 선택하려면 1을 눌러주세요 : ");
+    MEM_list();
+    printf("목록을 그만보시려면 1을 눌러주세요 : ");
     scanf("%d", &j);
     if (j == i)
     {
       break;
     }
+    break;
+
+  case 5:
+    printf("뒤로가기\n ");
+    break;
 
   default:
     printf("잘못된 숫자를 입력하셨습니다. \n\n");
@@ -124,8 +88,6 @@ int MEM_SW(int F_B)
 void STD_INIT(void)
 {
   memset(&std_mib, 0x0, sizeof(std_mib));
-
-  // 각 기능별 인덱스(순서)
   std_mib.rel = PROG_RUN;
 }
 
@@ -139,7 +101,6 @@ int RENT_SW(int F_B)
   int j;
   switch (F_B)
   {
-
   case 1:
     printf("도서 대출\n");
     rent_BOOK();
