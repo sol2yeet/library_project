@@ -6,7 +6,6 @@
 #include <memory.h>
 #include <time.h>
 
-#define MAX_LENGTH 256
 #define ERROR_NOT_FOUND -1
 #define PROG_RUN 1
 #define PROG_EXIT 0

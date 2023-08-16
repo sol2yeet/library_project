@@ -2,7 +2,7 @@
 #include "RENT.h"
 #include "STD.h"
 
-void Book_list(char *file, char *pfile_data)
+void Book_list(char *file)
 {
   struct stat sk;
   int i = 1;
@@ -16,14 +16,36 @@ void Book_list(char *file, char *pfile_data)
     exit(EXIT_FAILURE);
   }
 
-  pfile_data = malloc(sk.st_size);
-  while (fscanf((FILE *)file, "%[^\n] ", pfile_data) != EOF)
+  char *pfile_data[MAX_BOOK_NUM];
+  for (int j = 0; j < MAX_BOOK_NUM; j++)
   {
-    printf("\t [%d] %s\n", i, pfile_data);
+    pfile_data[j] = malloc(MAX_BOOK_TITLE);
+  }
+
+  while (i < MAX_BOOK_NUM && fscanf(file, "%[^\n]\n", pfile_data[i]) != EOF)
+  {
     i++;
   }
 
-  free(pfile_data);
+  for (int j = 0; j < i - 1; j++)
+  {
+    for (int k = 0; k < i - j - 1; k++)
+    {
+      if (strcmp(pfile_data[k], pfile_data[k + 1]) > 0)
+      {
+        char temp[MAX_BOOK_TITLE];
+        strcpy(temp, pfile_data[k]);
+        strcpy(pfile_data[k], pfile_data[k + 1]);
+        strcpy(pfile_data[k + 1], temp);
+      }
+    }
+  }
+
+  for (int j = 0; j < i; j++)
+  {
+    printf("\t [%d] %s\n", j + 1, pfile_data[j]);
+    free(pfile_data[j]);
+  }
 
   printf("\n");
   printf("*******************************************************************************\n");
@@ -112,7 +134,7 @@ void search_BOOK()
       break;
 
     case 3:
-      Book_list((char *)b_fp, file_contents);
+      Book_list((char *)b_fp);
       printf("\t (!) 목록에서 원하는 도서를 찾으시려면 1을 입력해 주세요 : \n");
       scanf("%d", &j);
       while (j != ERROR_NOT_FOUND)

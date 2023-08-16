@@ -14,7 +14,7 @@ int MEM_list()
   }
   else
   {
-    char *file_contents;
+    char *pfile_data[MAX_BOOK_NUM];
     struct stat sb;
     int i = 1;
 
@@ -27,15 +27,35 @@ int MEM_list()
       exit(EXIT_FAILURE);
     }
 
-    file_contents = malloc(sb.st_size);
-
-    while (fscanf(h_fp, "%[^\n] ", file_contents) != EOF)
+    for (int j = 0; j < MAX_BOOK_NUM; j++)
     {
-      printf("[%d] %s\n", i, file_contents);
+      pfile_data[j] = malloc(MAX_BOOK_TITLE);
+    }
+
+    while (i < MAX_BOOK_NUM && fscanf(h_fp, "%[^\n]\n", pfile_data[i]) != EOF)
+    {
       i++;
     }
 
-    free(file_contents);
+    for (int j = 0; j < i - 1; j++)
+    {
+      for (int k = 0; k < i - j - 1; k++)
+      {
+        if (strcmp(pfile_data[k], pfile_data[k + 1]) > 0)
+        {
+          char temp[MAX_BOOK_TITLE];
+          strcpy(temp, pfile_data[k]);
+          strcpy(pfile_data[k], pfile_data[k + 1]);
+          strcpy(pfile_data[k + 1], temp);
+        }
+      }
+    }
+    for (int j = 0; j < i; j++)
+    {
+      printf("\t [%d] %s\n", j + 1, pfile_data[j]);
+      free(pfile_data[j]);
+    }
+
     printf("\n");
     printf("*******************************************************************************\n");
     printf("\n");
